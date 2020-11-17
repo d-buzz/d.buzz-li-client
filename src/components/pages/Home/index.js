@@ -9,16 +9,17 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
-  },
+  }
 }));
 
 const Home = (props) => {
   const classes = useStyles();
-  const { shortenedLink } = props;
+  const { shortenedLinkInfo } = props;
+  const { shortenedLink } = shortenedLinkInfo
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-        {!shortenedLink && <ShortenLink/>}
+        {!shortenedLink && <ShortenLink />}
         {shortenedLink && <CopyLink />}
       </div>
     </React.Fragment>
@@ -26,7 +27,7 @@ const Home = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  shortenedLink: state.link.get("shortenedLink")
+  shortenedLinkInfo: state.link.get("shortenedLinkInfo"),
 });
 
 export default connect(mapStateToProps)(Home);

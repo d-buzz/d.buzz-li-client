@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { ContainedButton } from "./../../../components/elements";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import Swal from 'sweetalert2'
+import { swalBasicFire } from "../../../services/helper"
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -16,11 +16,7 @@ const CopyButton = (props) => {
   const { disabled, loading, shortLink } = props;
 
   const onCopy = () => {
-    Swal.fire(
-        'Success',
-        'Link copied to clipboard',
-        'success'
-    )
+    swalBasicFire( 'Success','Link copied to clipboard','success')
   }
 
   return (

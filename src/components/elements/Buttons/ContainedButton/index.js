@@ -7,7 +7,7 @@ import { red } from '@material-ui/core/colors';
 const useStyles = createUseStyles({
   button: {
     margin: 1,
-  },
+  }
 });
 const ColorButton = withStyles((theme) => ({
   root: {
@@ -15,6 +15,9 @@ const ColorButton = withStyles((theme) => ({
     backgroundColor: "#e51c34",
     "&:hover": {
       backgroundColor: red[900],
+    },
+    "&:disabled": {
+      color: "#D3D3D3",
     },
   },
 }))(Button);

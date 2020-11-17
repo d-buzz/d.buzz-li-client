@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { CopyButton } from "../../../components";
-import { SimpleLink } from "../../../components/elements"
+import { SimpleLink } from "../../../components/elements";
 import {
   Grid,
   Paper,
@@ -9,6 +9,7 @@ import {
   Typography,
   ButtonBase,
   Input,
+  Link,
 } from "@material-ui/core";
 import logo from "../../../images/dbuzz_icon.png";
 
@@ -52,14 +53,15 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "14px",
     fontWeight: "lighter",
   },
+  newShortenLink: {
+    fontSize: "0.875rem",
+  },
 }));
 
 const CopyLink = (props) => {
   const classes = useStyles();
-  const { 
-      shortLink,
-      longLink
-} = props
+  const { shortLink, longLink } = props;
+
   return (
     <React.Fragment>
       <Paper className={classes.paper}>
@@ -80,8 +82,8 @@ const CopyLink = (props) => {
                   variant="body2"
                   className={classes.description}
                 >
-                  Copy the shortened link and share it in messages, texts, posts,
-                  websites and other locations.
+                  Copy the shortened link and share it in messages, texts,
+                  posts, websites and other locations.
                 </Typography>
                 <form className={classes.root} noValidate autoComplete="off">
                   <div className={classes.urlInputDiv}>
@@ -94,15 +96,34 @@ const CopyLink = (props) => {
                       readOnly
                       fullWidth
                     />
-                    <CopyButton loading={false} shortLink={shortLink}/>
+                    <CopyButton shortLink={shortLink} />
                   </div>
                 </form>
               </Grid>
               <Grid item>
-                <Typography variant="body2" style={{ cursor: 'pointer' }}>
-                  Long URL: 
+                <Typography variant="body2" style={{ cursor: "pointer" }}>
+                  Long URL:
                 </Typography>
-                <SimpleLink url={longLink} label={longLink} color="secondary"/>
+                <Link
+                  href={longLink}
+                  color="secondary"
+                  rel="noopener"
+                  target="_blank"
+                >
+                  {longLink}
+                </Link>
+              </Grid>
+              <Grid item>
+                <Typography variant="body2" style={{ cursor: "pointer" }}>
+                  Try another one{" "}
+                  <Link
+                    className={classes.newShortenLink}
+                    href={longLink}
+                    color="secondary"
+                  >
+                    here
+                  </Link>
+                </Typography>
               </Grid>
             </Grid>
           </Grid>

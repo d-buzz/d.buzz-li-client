@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { validateUrl } from "../../../services/helper";
+import { pending } from "redux-saga-thunk";
 import { ShortenButton } from "../../../components";
 import {
   Grid,
@@ -52,22 +52,22 @@ const useStyles = makeStyles((theme) => ({
   },
   errorMsg: {
     color: "#e51c34",
-    fontStyle: "italic"
+    fontStyle: "italic",
   },
 }));
 
 const ShortenLink = (props) => {
-  const { shortenLinkRequest, setLongLink, shortLink } = props;
+  const { shortenLinkRequest, setLongLink } = props;
   const classes = useStyles();
   const [longurl, setLongurl] = useState("");
-  const [loading, setloading] = useState(false);
   const [inputError, setInputError] = useState("");
+  const [loading, setLoading ] = useState(false)
 
   const onChange = (e) => {
     const { target } = e;
     const { value } = target;
     setLongurl(value);
-
+      
     if (!value) {
       setInputError("URL is required");
     } else {
@@ -79,10 +79,18 @@ const ShortenLink = (props) => {
     if (!longurl) {
       setInputError("URL is required");
     } else {
+      
       if (!inputError) {
         setLongLink(longurl);
-        shortenLinkRequest(longurl);
+        setLoading(true)
         setInputError("");
+        shortenLinkRequest(longurl).then((result) => {
+          setLoading(false)
+          if(result && result.statusCode !== 200){
+            setInputError(result.message)
+          }
+        });
+       
       }
     }
   };
@@ -127,6 +135,7 @@ const ShortenLink = (props) => {
                     )}
                   </div>
                   <ShortenButton
+                    disabled={Boolean(loading)}
                     loading={Boolean(loading)}
                     onClick={handleShortenLink}
                   />
@@ -151,7 +160,7 @@ const ShortenLink = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  shortLink: state.link.get("shortLink"),
+  shortLink: state.link.get("shortLink")
 });
 
 const mapDispatchToProps = (dispatch) => ({
