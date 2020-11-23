@@ -92,3 +92,13 @@ export const swalToastFire = (title, icon) => {
     title: title,
   });
 };
+
+export const packLoginData = (username, password) => {
+  return new Buffer(
+    `${username}\l${password}`,
+  ).toString('hex')
+}
+
+export const extractLoginData = (data) => {
+  return new Buffer(data, 'hex').toString().split('\l')
+}

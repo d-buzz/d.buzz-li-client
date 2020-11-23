@@ -1,24 +1,27 @@
 import React, { useState } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { pending } from "redux-saga-thunk";
 import { ShortenButton } from "../../../components";
+import { InputText } from "../../../components/elements";
 import {
   Grid,
   Paper,
   makeStyles,
   Typography,
   ButtonBase,
-  Input,
 } from "@material-ui/core";
 import logo from "../../../images/dbuzz_icon.png";
 import { shortenLinkRequest, setLongLink } from "../../../store/link/actions";
+import { broadcastNotification } from "../../../store/interface/actions";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1
+  },
   paper: {
     padding: theme.spacing(5),
     margin: "auto",
-    width: "750px",
+    width: "800px",
     backgroundColor: "#282a2d",
     color: "#FFFFFF",
     borderRadius: "5px",
@@ -57,17 +60,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ShortenLink = (props) => {
-  const { shortenLinkRequest, setLongLink } = props;
+  const { shortenLinkRequest, broadcastNotification, setLongLink } = props;
   const classes = useStyles();
   const [longurl, setLongurl] = useState("");
   const [inputError, setInputError] = useState("");
-  const [loading, setLoading ] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const onChange = (e) => {
     const { target } = e;
     const { value } = target;
     setLongurl(value);
-      
+
     if (!value) {
       setInputError("URL is required");
     } else {
@@ -79,88 +82,92 @@ const ShortenLink = (props) => {
     if (!longurl) {
       setInputError("URL is required");
     } else {
-      
       if (!inputError) {
         setLongLink(longurl);
-        setLoading(true)
         setInputError("");
+        setLoading(true);
         shortenLinkRequest(longurl).then((result) => {
-          setLoading(false)
-          if(result && result.statusCode !== 200){
-            setInputError(result.message)
+          setLoading(false);
+          if (result && result.statusCode !== 200) {
+            broadcastNotification("error", result.message);
           }
         });
-       
       }
     }
   };
 
   return (
     <React.Fragment>
-      <Paper className={classes.paper}>
-        <Grid container spacing={5} className={classes.center}>
-          <Grid item>
-            <ButtonBase className={classes.image}>
-              <img className={classes.img} alt="dbuzz" src={logo} />
-            </ButtonBase>
-          </Grid>
-          <Grid item xs={12} sm container>
-            <Grid item xs container direction="column" spacing={2}>
-              <Grid item xs>
-                <Typography gutterBottom variant="h5" className={classes.title}>
-                  Shorten a link
-                </Typography>
-                <form className={classes.root} noValidate autoComplete="off">
-                  <div className={classes.urlInputDiv}>
-                    <Input
-                      id="input-long-url"
-                      placeholder="Paste here the URL you want to shorten"
-                      inputProps={{ "aria-label": "shortenUrl" }}
-                      className={classes.urlInput}
-                      color="secondary"
-                      value={longurl}
-                      onChange={onChange}
-                      autoFocus
-                      required
-                      fullWidth
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <Grid container spacing={5} className={classes.center}>
+            <Grid item>
+              <ButtonBase className={classes.image}>
+                <img className={classes.img} alt="dbuzz" src={logo} />
+              </ButtonBase>
+            </Grid>
+            <Grid item xs={12} sm container>
+              <Grid item xs container direction="column" spacing={2}>
+                <Grid item xs>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    className={classes.title}
+                  >
+                    Shorten a link
+                  </Typography>
+                  <form className={classes.root} noValidate autoComplete="off">
+                    <div className={classes.urlInputDiv}>
+                      <InputText
+                        id="input-long-url"
+                        placeholder="Paste here the URL you want to shorten"
+                        inputProps={{ "aria-label": "shortenUrl" }}
+                        className={classes.urlInput}
+                        color="secondary"
+                        value={longurl}
+                        onChange={onChange}
+                        autoFocus
+                        required
+                        fullWidth
+                      />
+                      {inputError && (
+                        <Typography
+                          gutterBottom
+                          variant="body2"
+                          className={classes.errorMsg}
+                        >
+                          {inputError}
+                        </Typography>
+                      )}
+                    </div>
+                    <ShortenButton
+                      disabled={Boolean(loading)}
+                      loading={Boolean(loading)}
+                      onClick={handleShortenLink}
                     />
-                    {inputError && (
-                      <Typography
-                        gutterBottom
-                        variant="body2"
-                        className={classes.errorMsg}
-                      >
-                        {inputError}
-                      </Typography>
-                    )}
-                  </div>
-                  <ShortenButton
-                    disabled={Boolean(loading)}
-                    loading={Boolean(loading)}
-                    onClick={handleShortenLink}
-                  />
-                </form>
-              </Grid>
-              <Grid item>
-                <Typography
-                  gutterBottom
-                  variant="body2"
-                  className={classes.description}
-                >
-                  Dbuzz.Link is a link shortening service for D.Buzz &
-                  microbloggers alike.
-                </Typography>
+                  </form>
+                </Grid>
+                <Grid item>
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    className={classes.description}
+                  >
+                    Dbuzz.Link is a link shortening service for D.Buzz &
+                    microbloggers alike.
+                  </Typography>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
+      </div>
     </React.Fragment>
   );
 };
 
 const mapStateToProps = (state) => ({
-  shortLink: state.link.get("shortLink")
+  shortLink: state.link.get("shortLink"),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -168,6 +175,7 @@ const mapDispatchToProps = (dispatch) => ({
     {
       setLongLink,
       shortenLinkRequest,
+      broadcastNotification,
     },
     dispatch
   ),

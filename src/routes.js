@@ -1,7 +1,8 @@
 import {
     AppFrame,
     Home,
-    WhiteListDomain
+    WhiteListDomain,
+    RedirectLongUrl
 } from './components';
 
 const routes = [
@@ -14,7 +15,17 @@ const routes = [
                 component: Home
             },
             {
-                path: '/whitelist',
+                path: '/:keyword',
+                exact: true,
+                component: RedirectLongUrl
+            },
+            {
+                path: '/ug/whitelist',
+                exact: true,
+                component: WhiteListDomain
+            },
+            {
+                path: '/admin/whitelist',
                 exact: true,
                 component: WhiteListDomain
             }

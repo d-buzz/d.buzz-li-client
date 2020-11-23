@@ -1,23 +1,40 @@
 import React from "react";
-import { createUseStyles } from "react-jss";
-import { DomainList } from "../../../components"
+import {
+  Grid,
+  makeStyles,
+} from "@material-ui/core";
+import { DomainList, Header, Footer } from "../../../components";
 
-const useStyles = createUseStyles({
-    wrapper: {
-        minHeight: '100vh',
-    }
-});
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    minHeight: "100vh",
+    overflow: 'hidden'
+  }
+}));
 
 const WhiteListDomain = (props) => {
-    const classes = useStyles();
-    return (
-        <React.Fragment>
-            <div className={classes.wrapper}>
-                <h1>This is WhiteListDomain component</h1>
-                <DomainList/>
-            </div>
-        </React.Fragment>
-    );
+  const classes = useStyles();
+  return (
+    <React.Fragment>
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        justify="center"
+        className={classes.wrapper}
+      >
+        <Grid item>
+          <Header />
+        </Grid>
+        <Grid item xs={12}>
+          <DomainList/>
+        </Grid>
+        <Grid item>
+          <Footer />
+        </Grid>
+      </Grid>
+    </React.Fragment>
+  );
 };
 
 export default WhiteListDomain;

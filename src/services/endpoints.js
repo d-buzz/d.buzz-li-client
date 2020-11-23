@@ -2,34 +2,34 @@ export const endpoints = {
   link  : {
     shorten: {
       post(payload) {
-        return "url/shorten";
+        return "/url/shorten";
       },
     },
     longUrl: {
       get(payload) {
-        return `url/${payload.keyword}`;
+        return `/url/${payload.keyword}`;
       },
     },
   },
   whitelist: {
     list: {
       get(payload) {
-        return `whitelist/list/${payload.limit}/${payload.offset}`;
+        return `/whitelist/list/${payload.limit}/${payload.offset}`;
       },
     },
     add: {
       post(payload) {
-        return "whitelist/add";
+        return "/whitelist/add";
       },
     },
     update: {
       post(payload) {
-        return "whitelist/update";
+        return "/whitelist/update";
       },
     },
     statusUpdate: {
       post(payload) {
-        return "whitelist/status-update";
+        return "/whitelist/status-update";
       },
     },
   },

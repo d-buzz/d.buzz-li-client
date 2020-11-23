@@ -2,6 +2,7 @@ import React from 'react'
 import { renderRoutes } from 'react-router-config'
 import { createUseStyles } from 'react-jss'
 import { Container } from '@material-ui/core';
+import NotificationBox from "../../../components/common/NotificationBox"
 
 const useStyles = createUseStyles({
     main: {
@@ -21,6 +22,7 @@ const AppFrame = (props) => {
                     {renderRoutes(route.routes)}
                 </div>
             </Container>
+            <NotificationBox />
         </React.Fragment>
     );
 }

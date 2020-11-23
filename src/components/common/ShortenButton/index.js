@@ -21,7 +21,7 @@ const ShortenButton = (props) => {
           label="Shorten"
           loading={loading}
           disabled={disabled}
-          fullwidth
+          fullWidth
           icon={<ShortTextIcon />}
           onClick={onClick}
         />

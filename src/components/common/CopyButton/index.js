@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import { createUseStyles } from "react-jss";
 import { ContainedButton } from "./../../../components/elements";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { swalBasicFire } from "../../../services/helper"
+import { broadcastNotification } from "../../../store/interface/actions"
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -13,10 +15,15 @@ const useStyles = createUseStyles({
 
 const CopyButton = (props) => {
   const classes = useStyles();
-  const { disabled, loading, shortLink } = props;
+  const { 
+    disabled, 
+    loading, 
+    shortLink,
+    broadcastNotification 
+  } = props;
 
   const onCopy = () => {
-    swalBasicFire( 'Success','Link copied to clipboard','success')
+    broadcastNotification('success','Link copied to clipboard')
   }
 
   return (
@@ -29,9 +36,8 @@ const CopyButton = (props) => {
             size="large"
             color="secondary"
             label="Copy"
-            loading={loading}
             disabled={disabled}
-            fullwidth
+            fullWidth
             icon={<FileCopyIcon />}
           />
         </CopyToClipboard>
@@ -40,4 +46,16 @@ const CopyButton = (props) => {
   );
 };
 
-export default CopyButton;
+const mapStateToProps = (state) => ({
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators(
+    {
+      broadcastNotification
+    },
+    dispatch
+  ),
+});
+
+export default connect(mapStateToProps,mapDispatchToProps)(CopyButton);
