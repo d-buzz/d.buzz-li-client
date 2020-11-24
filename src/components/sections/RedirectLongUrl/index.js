@@ -11,7 +11,7 @@ const RedirectLongUrl = (props) => {
   useEffect(() => {
     if (keyword) {
       getOrigLinkRequest(keyword).then((result) => {
-        if (result.statusCode === 200) {
+        if (result.code === 200) {
           setOrigLink(result.origLink);
         } else {
           setOrigLink(window.location.origin);

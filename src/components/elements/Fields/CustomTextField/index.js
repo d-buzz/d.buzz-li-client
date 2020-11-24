@@ -4,10 +4,10 @@ import { TextField, withStyles, makeStyles } from "@material-ui/core";
 const CssTextField = withStyles({
   root: {
     "& .MuiIconButton-label": {
-      color: "white",
+      color: "#657786",
     },
     "& .MuiInputLabel-outlined": {
-      color: "white",
+      color: "#657786",
     },
     "& label.Mui-focused": {
       color: "red",

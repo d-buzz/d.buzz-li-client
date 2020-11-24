@@ -22,7 +22,7 @@ function* shortenLinkRequest(payload, meta) {
     }
     const info = {
       shortenedLink: shortUrl,
-      statusCode: data.code,
+      code: data.code,
       message: data.message,
     };
     yield put(shortenedLinkSuccess(info, meta));
@@ -42,7 +42,7 @@ function* getOrigLinkRequest(payload, meta) {
     }
     const info = {
       origLink,
-      statusCode: data.code,
+      code: data.code,
       message: data.message,
     };
     yield put(getOrigLinkSuccess(info, meta));

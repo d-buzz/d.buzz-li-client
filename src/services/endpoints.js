@@ -1,4 +1,11 @@
 export const endpoints = {
+  auth : {
+    login : {
+      post(payload) {
+        return "/auth/login"
+      }
+    }
+  },
   link  : {
     shorten: {
       post(payload) {

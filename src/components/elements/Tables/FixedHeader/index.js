@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { green, red } from '@material-ui/core/colors';
 import {
   Chip,
   Link,
@@ -12,6 +13,8 @@ import {
   TablePagination,
   TableRow,
 } from "@material-ui/core";
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 
 const useStyles = makeStyles({
   root: {
@@ -38,6 +41,9 @@ const StyledTableCell = withStyles((theme) => ({
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
+    "& .MuiTableCell-body" : {
+      color: "#e51c34",
+    },
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
@@ -77,6 +83,13 @@ const StickyHeadTable = (props) => {
           <Link href={`https://${value}`} color="secondary" rel="noopener" target="_blank" className={classes.link}>
             {value}
           </Link>
+        );
+      case "options":
+        return (
+          <React.Fragment>
+            <EditOutlinedIcon style={{ color: green[500] }}/>
+            <DeleteOutlineIcon color="secondary"/>
+          </React.Fragment>
         );
       default:
         return value;

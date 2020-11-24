@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { makeStyles, Link, Grid, Typography } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import { LoginModal } from "../../../components";
+import { signoutUserRequest } from "../../../store/auth/actions";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -27,38 +28,48 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Footer = (props) => {
-  const { user={} } = props
-  const { is_authenticated } = user
+  const { user, signoutUserRequest } = props;
+  const { is_authenticated } = user;
   const classes = useStyles();
   const history = useHistory();
   const { pathname } = useLocation();
-  const [showLogin, setShowLogin] = useState(false)
+  const [showLogin, setShowLogin] = useState(false);
 
   const ugDomainRoute = pathname.match(/^\/ug\/whitelist/);
   const adminDomainRoute = pathname.match(/^\/admin\/whitelist/);
-  const loggedInAsAdmin = true;
 
   useEffect(() => {
-    if(!is_authenticated || is_authenticated == undefined){
-      setShowLogin(true)
+    if (
+      adminDomainRoute &&
+      (!is_authenticated || is_authenticated == undefined)
+    ) {
+      setShowLogin(true);
     }
   }, []);
 
   const redirectToWhitelist = () => {
-    history.push("/ug/whitelist");
+    if(is_authenticated){
+      history.push("/admin/whitelist");
+    }else{
+      history.push("/ug/whitelist");
+    }
   };
 
   const redirectToHome = () => {
     history.push("/");
   };
 
+  const handleClickLogout = () => {
+    signoutUserRequest();
+  };
+
   const handleClickOpenLoginModal = () => {
-    setShowLogin(true)
-  }
-  
+    setShowLogin(true);
+  };
+
   const handleClickCloseLoginModal = () => {
-    setShowLogin(false)
-  }
+    setShowLogin(false);
+  };
 
   return (
     <React.Fragment>
@@ -75,7 +86,7 @@ const Footer = (props) => {
           </Typography>
         </Grid>
         <Grid item xs={12} sm>
-          {adminDomainRoute && loggedInAsAdmin && (
+          {adminDomainRoute && !is_authenticated && (
             <Link
               className={classes.login}
               onClick={handleClickOpenLoginModal}
@@ -84,6 +95,17 @@ const Footer = (props) => {
               target="_blank"
             >
               Login
+            </Link>
+          )}
+          {adminDomainRoute && is_authenticated && (
+            <Link
+              className={classes.login}
+              onClick={handleClickLogout}
+              color="secondary"
+              rel="noopener"
+              target="_blank"
+            >
+              Logout
             </Link>
           )}
           {!ugDomainRoute && !adminDomainRoute && (
@@ -110,17 +132,22 @@ const Footer = (props) => {
           )}
         </Grid>
       </Grid>
-      <LoginModal show={showLogin} onHide={handleClickCloseLoginModal}/>
+      <LoginModal show={showLogin} onHide={handleClickCloseLoginModal} />
     </React.Fragment>
   );
 };
 
 const mapStateToProps = (state) => ({
-  user: state.auth.get("user")
+  user: state.auth.get("user"),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({}, dispatch),
+  ...bindActionCreators(
+    {
+      signoutUserRequest,
+    },
+    dispatch
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Footer);

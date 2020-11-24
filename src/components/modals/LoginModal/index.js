@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { pending } from 'redux-saga-thunk'
-import { authenticateUserRequest } from "../../../store/auth/actions"
+import { authenticateUserRequest } from "../../../store/auth/actions";
 import { DialogTitle } from "../../../components";
+import { broadcastNotification } from "../../../store/interface/actions";
+
 import { CustomTextField, ContainedButton } from "../../../components/elements";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
@@ -52,23 +53,36 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -12,
     marginLeft: -12,
   },
+  actionBtn: {
+    paddingRight: "0.5rem",
+    paddingBottom: "1rem"
+  }
 }));
 
 const LoginModal = (props) => {
   const { 
-      show, 
-      onHide, 
-      user, 
-      loading,
-      authenticateUserRequest
+    show, 
+    onHide, 
+    authenticateUserRequest,
+    broadcastNotification 
   } = props;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false)
   const classes = useStyles();
 
   const handleSubmit = () => {
-    authenticateUserRequest(username, password)
+    setLoading(true)
+    authenticateUserRequest(username, password).then(({is_authenticated}) => {
+      setLoading(false)
+      if(!is_authenticated){
+        broadcastNotification("error","Authentication failed, please check your credentials.")
+      }else{
+        handleClose()
+        broadcastNotification("success","Authenticated successfully.")
+      }
+    });
   };
 
   const handleClose = () => {
@@ -99,6 +113,7 @@ const LoginModal = (props) => {
           style: {
             backgroundColor: "#202225",
             color: "#FFFFFF",
+            paddingTop: "1rem"
           },
         }}
       >
@@ -152,6 +167,7 @@ const LoginModal = (props) => {
           </Grid>
         </DialogContent>
         <DialogActions>
+          <div className={classes.actionBtn}>
           <ContainedButton
             variant="outlined"
             color="secondary"
@@ -161,6 +177,7 @@ const LoginModal = (props) => {
             loading={loading}
             loadType="circular"
           />
+          </div>
         </DialogActions>
       </Dialog>
     </React.Fragment>
@@ -168,13 +185,16 @@ const LoginModal = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-    loading: pending(state, 'AUTHENTICATE_USER_REQUEST')
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({
-    authenticateUserRequest
-  }, dispatch),
+  ...bindActionCreators(
+    {
+      authenticateUserRequest,
+      broadcastNotification
+    },
+    dispatch
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginModal);

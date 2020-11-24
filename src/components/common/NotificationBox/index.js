@@ -50,7 +50,7 @@ const NotificationBox = (props) => {
       anchorOrigin={anchorOrigin}
       style={snackBarStyle}
       open={open}
-      autoHideDuration={1500}
+      autoHideDuration={3000}
       onClose={onClose}
       className={classes.wrapper}
     >

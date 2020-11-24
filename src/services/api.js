@@ -18,3 +18,6 @@ export let updateDomain = (payload) => fetchApi(
 
 export let updateDomainStatus = (payload) => fetchApi(
     ep.endpoints.whitelist.statusUpdate.post(payload), payload, 'post')
+
+export let authenticateUser = (payload) => fetchApi(
+    ep.endpoints.auth.login.post(payload), payload, 'post')

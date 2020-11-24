@@ -5,6 +5,7 @@ import {
   getDomainListFailure,
 } from "./actions";
 import { getWhitelistedDomains } from "./../../services/api";
+import moment from 'moment'
 
 function* getDomainListRequest(payload, meta) {
   try {
@@ -15,8 +16,10 @@ function* getDomainListRequest(payload, meta) {
       const info = data.data;
       list = info.map((x) => {
         x.status = parseInt(x.is_active) === 1 ? "active" : "inactive";
+        x.created = moment(x.created_at).format("YYYY/MM/DD h:mm A")
         return x;
       });
+      console.log(list)
     }
     yield put(getDomainListSuccess(list, meta));
   } catch (error) {

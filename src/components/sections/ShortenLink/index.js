@@ -88,7 +88,7 @@ const ShortenLink = (props) => {
         setLoading(true);
         shortenLinkRequest(longurl).then((result) => {
           setLoading(false);
-          if (result && result.statusCode !== 200) {
+          if (result && result.code !== 200) {
             broadcastNotification("error", result.message);
           }
         });
