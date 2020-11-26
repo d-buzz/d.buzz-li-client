@@ -14,7 +14,7 @@ export let addDomain = (payload) => fetchApi(
     ep.endpoints.whitelist.add.post(payload), payload, 'post')
 
 export let updateDomain = (payload) => fetchApi(
-    ep.endpoints.whitelist.add.post(payload), payload, 'post')
+    ep.endpoints.whitelist.update.post(payload), payload, 'post')
 
 export let updateDomainStatus = (payload) => fetchApi(
     ep.endpoints.whitelist.statusUpdate.post(payload), payload, 'post')

@@ -17,7 +17,7 @@ import {
   Grid,
   Typography,
   InputAdornment,
-  IconButton,
+  IconButton
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -55,47 +55,74 @@ const useStyles = makeStyles((theme) => ({
   },
   actionBtn: {
     paddingRight: "0.5rem",
-    paddingBottom: "1rem"
-  }
+    paddingBottom: "1rem",
+  },
+  errorMsg: {
+    color: "#e51c34",
+    fontStyle: "italic",
+  },
 }));
 
 const LoginModal = (props) => {
-  const { 
-    show, 
-    onHide, 
+  const {
+    show,
+    onHide,
     authenticateUserRequest,
-    broadcastNotification 
+    broadcastNotification,
   } = props;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [usernameTouched, setUsernameTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
   const classes = useStyles();
 
   const handleSubmit = () => {
-    setLoading(true)
-    authenticateUserRequest(username, password).then(({is_authenticated}) => {
-      setLoading(false)
-      if(!is_authenticated){
-        broadcastNotification("error","Authentication failed, please check your credentials.")
-      }else{
-        handleClose()
-        broadcastNotification("success","Authenticated successfully.")
-      }
-    });
+    if (username && password) {
+      setLoading(true);
+      authenticateUserRequest(username, password).then(
+        ({ is_authenticated }) => {
+          setLoading(false);
+          if (!is_authenticated) {
+            broadcastNotification(
+              "error",
+              "Authentication failed, please check your credentials."
+            );
+          } else {
+            handleClose();
+            handleClearInput();
+            broadcastNotification("success", "Authenticated successfully.");
+          }
+        }
+      );
+    }else{
+      setUsernameTouched(true)
+      setPasswordTouched(true)
+    }
   };
 
   const handleClose = () => {
     onHide();
   };
 
+  const handleClearInput = () => {
+    setUsername("")
+    setPassword("")
+    setUsernameTouched(false)
+    setPasswordTouched(false)
+  }
+
   const onChangeValues = (e) => {
     const { target } = e;
     const { id, value } = target;
+
     if (id === "username") {
       setUsername(value);
+      setUsernameTouched(true);
     } else if (id === "password") {
       setPassword(value);
+      setPasswordTouched(true);
     }
   };
 
@@ -113,7 +140,7 @@ const LoginModal = (props) => {
           style: {
             backgroundColor: "#202225",
             color: "#FFFFFF",
-            paddingTop: "1rem"
+            paddingTop: "1rem",
           },
         }}
       >
@@ -127,6 +154,7 @@ const LoginModal = (props) => {
             <Grid item xs={12} className={classes.formContainer}>
               <form id="loginForm" className={classes.form}>
                 <CustomTextField
+                  error={usernameTouched && username == ""}
                   id="username"
                   label="Username"
                   color="secondary"
@@ -136,8 +164,12 @@ const LoginModal = (props) => {
                   required
                   autoFocus
                   fullWidth
+                  helperText={
+                    usernameTouched && !username ? "Username is required" : ""
+                  }
                 />
                 <CustomTextField
+                  error={passwordTouched && password == ""}
                   id="password"
                   type={showPass ? "text" : "password"}
                   label="Password"
@@ -148,6 +180,9 @@ const LoginModal = (props) => {
                   margin="normal"
                   required
                   fullWidth
+                  helperText={
+                    passwordTouched && !password ? "Password is required" : ""
+                  }
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -168,15 +203,15 @@ const LoginModal = (props) => {
         </DialogContent>
         <DialogActions>
           <div className={classes.actionBtn}>
-          <ContainedButton
-            variant="outlined"
-            color="secondary"
-            label="Login"
-            onClick={handleSubmit}
-            disabled={loading}
-            loading={loading}
-            loadType="circular"
-          />
+            <ContainedButton
+              variant="outlined"
+              color="secondary"
+              label="Login"
+              onClick={handleSubmit}
+              disabled={loading}
+              loading={loading}
+              loadType="circular"
+            />
           </div>
         </DialogActions>
       </Dialog>
@@ -184,14 +219,13 @@ const LoginModal = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-});
+const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators(
     {
       authenticateUserRequest,
-      broadcastNotification
+      broadcastNotification,
     },
     dispatch
   ),

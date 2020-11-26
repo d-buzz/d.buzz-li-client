@@ -27,11 +27,11 @@ export const fetchApi = async (
   }
 ) => {
   axios.defaults.baseURL = appConfig.API_HOST;
-  axios.interceptors.request.use(async (request) => {
-    // const token = await getUserToken();
-    // if (token) {
-    //   request.headers.common.Authorization = `${appConfig.TOKEN_PREFIX} ${token}`;
-    // }
+  axios.interceptors.request.use((request) => {
+    const token = getUserToken();
+    if (token) {
+      request.headers.common.Authorization = token;
+    }
     return request;
   });
 
@@ -51,7 +51,7 @@ export const fetchApi = async (
       return axios
         .post(endPoints, payload, { header })
         .then(function (response) {
-          console.log("response", response.data);
+          // console.log("response", response.data);
           return response;
         })
         .catch(function (error) {
@@ -79,24 +79,12 @@ export const clearLocalStorage = () => {
   localStorage.clear();
 };
 
-export const swalBasicFire = (title, description, icon) => {
-  Swal.fire(title, description, icon);
-};
-
-export const swalToastFire = (title, icon) => {
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    onOpen: (toast) => {
-      toast.addEventListener("mouseenter", Swal.stopTimer);
-      toast.addEventListener("mouseleave", Swal.resumeTimer);
-    },
-  });
-  Toast.fire({
-    icon: icon,
-    title: title,
-  });
-};
+export const getUserToken = () => {
+    let user = getItemLocalStorage("user")
+    user = JSON.parse(user)
+    let token = null;
+    if(user && user.hasOwnProperty("token")){
+      token = user.token
+    }
+    return token;
+}

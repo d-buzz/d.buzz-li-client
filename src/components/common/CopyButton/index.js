@@ -17,7 +17,6 @@ const CopyButton = (props) => {
   const classes = useStyles();
   const { 
     disabled, 
-    loading, 
     shortLink,
     broadcastNotification 
   } = props;

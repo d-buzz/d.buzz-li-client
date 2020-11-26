@@ -46,26 +46,28 @@ const NotificationBox = (props) => {
   };
 
   return (
-    <Snackbar
-      anchorOrigin={anchorOrigin}
-      style={snackBarStyle}
-      open={open}
-      autoHideDuration={3000}
-      onClose={onClose}
-      className={classes.wrapper}
-    >
-      <Alert
-        variant="outlined"
+    <React.Fragment>
+      <Snackbar
+        anchorOrigin={anchorOrigin}
+        style={snackBarStyle}
+        open={open}
+        autoHideDuration={3000}
         onClose={onClose}
-        severity={severity}
-        classes={{ root: classes.alertWrapper }}
+        className={classes.wrapper}
       >
-        <AlertTitle>
-          {`${severity.charAt(0).toUpperCase()}${severity.slice(1)}`}
-        </AlertTitle>
-        {message}
-      </Alert>
-    </Snackbar>
+        <Alert
+          variant="outlined"
+          onClose={onClose}
+          severity={severity}
+          classes={{ root: classes.alertWrapper }}
+        >
+          <AlertTitle>
+            {`${severity.charAt(0).toUpperCase()}${severity.slice(1)}`}
+          </AlertTitle>
+          {message}
+        </Alert>
+      </Snackbar>
+    </React.Fragment>
   );
 };
 
