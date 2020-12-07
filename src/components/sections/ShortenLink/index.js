@@ -96,6 +96,14 @@ const ShortenLink = (props) => {
     }
   };
 
+  const handleKeypress = e => {
+    //it triggers by pressing the enter key
+    console.log(e)
+    if (e.charCode === 13) {
+      handleShortenLink();
+    }
+  }
+
   return (
     <React.Fragment>
       <div className={classes.root}>
@@ -116,8 +124,7 @@ const ShortenLink = (props) => {
                   >
                     Shorten a link
                   </Typography>
-                  <form className={classes.root} noValidate autoComplete="off">
-                    <div className={classes.urlInputDiv}>
+                  <div className={classes.urlInputDiv}>
                       <InputText
                         id="input-long-url"
                         placeholder="Paste here the URL you want to shorten"
@@ -126,6 +133,7 @@ const ShortenLink = (props) => {
                         color="secondary"
                         value={longurl}
                         onChange={onChange}
+                        onKeyPress={handleKeypress}
                         autoFocus
                         required
                         fullWidth
@@ -145,7 +153,6 @@ const ShortenLink = (props) => {
                       loading={Boolean(loading)}
                       onClick={handleShortenLink}
                     />
-                  </form>
                 </Grid>
                 <Grid item>
                   <Typography
@@ -153,7 +160,7 @@ const ShortenLink = (props) => {
                     variant="body2"
                     className={classes.description}
                   >
-                    Dbuzz.Link is a link shortening service for D.Buzz &
+                    DBuzz.Link is a link shortening service for D.Buzz &
                     microbloggers alike.
                   </Typography>
                 </Grid>

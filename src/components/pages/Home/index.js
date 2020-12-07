@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { ShortenLink, CopyLink, Header, Footer } from "../../../components";
-import { makeStyles, Grid } from "@material-ui/core";
+import React from "react"
+import { connect } from "react-redux"
+import { ShortenLink, CopyLink, DomainList, Header, Footer } from "../../../components"
+import { makeStyles, Grid } from "@material-ui/core"
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     minHeight: "100vh",
-  }
-}));
+  },
+}))
 
 const Home = (props) => {
-  const classes = useStyles();
-  const { shortenedLinkInfo } = props;
-  const { shortenedLink } = shortenedLinkInfo;
+  const classes = useStyles()
+  const { shortenedLinkInfo, currentPage } = props
+  const { shortenedLink } = shortenedLinkInfo
   return (
     <React.Fragment>
       <Grid
@@ -26,19 +26,21 @@ const Home = (props) => {
           <Header />
         </Grid>
         <Grid item xs={12}>
-          {!shortenedLink && <ShortenLink />}
-          {shortenedLink && <CopyLink />}
+          {!currentPage && !shortenedLink && <ShortenLink />}
+          {!currentPage && shortenedLink && <CopyLink />}
+          {currentPage === 'whitelist' && <DomainList />}
         </Grid>
         <Grid item>
           <Footer />
         </Grid>
       </Grid>
     </React.Fragment>
-  );
-};
+  )
+}
 
 const mapStateToProps = (state) => ({
   shortenedLinkInfo: state.link.get("shortenedLinkInfo"),
-});
+  currentPage: state.interfaces.get("currentPage"),
+})
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(Home)

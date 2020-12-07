@@ -14,21 +14,21 @@ const routes = [
                 exact: true,
                 component: Home
             },
-            {
-                path: '/:keyword',
-                exact: true,
-                component: RedirectLongUrl
-            },
-            {
-                path: '/ug/whitelist',
-                exact: true,
-                component: WhiteListDomain
-            },
-            {
-                path: '/admin/whitelist',
-                exact: true,
-                component: WhiteListDomain
-            }
+            // {
+            //     path: '/:keyword',
+            //     exact: true,
+            //     component: RedirectLongUrl
+            // },
+            // {
+            //     path: '/ug/whitelist',
+            //     exact: true,
+            //     component: WhiteListDomain
+            // },
+            // {
+            //     path: '/admin/whitelist',
+            //     exact: true,
+            //     component: WhiteListDomain
+            // }
         ]
     }
 ]

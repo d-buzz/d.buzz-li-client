@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { makeStyles, Link, Grid, Typography } from "@material-ui/core";
-import { useHistory, useLocation } from "react-router-dom";
-import { LoginModal } from "../../../components";
-import { signoutUserRequest } from "../../../store/auth/actions";
+import React, { useEffect, useState } from "react"
+import { bindActionCreators } from "redux"
+import { connect } from "react-redux"
+import { makeStyles, Link, Grid, Typography } from "@material-ui/core"
+import { LoginModal } from "../../../components"
+import { signoutUserRequest } from "../../../store/auth/actions"
+import { setCurrentPage } from "../../../store/interface/actions"
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -25,51 +25,44 @@ const useStyles = makeStyles((theme) => ({
     float: "right",
     paddingLeft: "1.5rem",
   },
-}));
+}))
 
 const Footer = (props) => {
-  const { user, signoutUserRequest } = props;
-  const { is_authenticated } = user;
-  const classes = useStyles();
-  const history = useHistory();
-  const { pathname } = useLocation();
-  const [showLogin, setShowLogin] = useState(false);
+  const { user, signoutUserRequest, currentPage, setCurrentPage } = props
+  const { is_authenticated } = user
+  const classes = useStyles()
+  const [showLogin, setShowLogin] = useState(false)
 
-  const ugDomainRoute = pathname.match(/^\/ug\/whitelist/);
-  const adminDomainRoute = pathname.match(/^\/admin\/whitelist/);
+  const adminDomainRoute = (currentPage === "whitelist")
 
   useEffect(() => {
     if (
       adminDomainRoute &&
-      (!is_authenticated || is_authenticated == undefined)
+      (!is_authenticated || is_authenticated === undefined)
     ) {
-      setShowLogin(true);
+      setShowLogin(true)
     }
-  }, []);
+  }, [])
 
   const redirectToWhitelist = () => {
-    if(is_authenticated){
-      history.push("/admin/whitelist");
-    }else{
-      history.push("/ug/whitelist");
-    }
-  };
+    setCurrentPage('whitelist')
+  }
 
   const redirectToHome = () => {
-    history.push("/");
-  };
+    setCurrentPage('')
+  }
 
   const handleClickLogout = () => {
-    signoutUserRequest();
-  };
+    signoutUserRequest()
+  }
 
   const handleClickOpenLoginModal = () => {
-    setShowLogin(true);
-  };
+    setShowLogin(true)
+  }
 
   const handleClickCloseLoginModal = () => {
-    setShowLogin(false);
-  };
+    setShowLogin(false)
+  }
 
   return (
     <React.Fragment>
@@ -94,7 +87,7 @@ const Footer = (props) => {
               rel="noopener"
               target="_blank"
             >
-              Login
+              Admin 
             </Link>
           )}
           {adminDomainRoute && is_authenticated && (
@@ -108,7 +101,7 @@ const Footer = (props) => {
               Logout
             </Link>
           )}
-          {!ugDomainRoute && !adminDomainRoute && (
+          {!adminDomainRoute && (
             <Link
               className={classes.whitelist}
               onClick={redirectToWhitelist}
@@ -119,7 +112,7 @@ const Footer = (props) => {
               Whitelisted Domains
             </Link>
           )}
-          {(ugDomainRoute || adminDomainRoute) && (
+          {adminDomainRoute && (
             <Link
               className={classes.whitelist}
               onClick={redirectToHome}
@@ -134,20 +127,22 @@ const Footer = (props) => {
       </Grid>
       <LoginModal show={showLogin} onHide={handleClickCloseLoginModal} />
     </React.Fragment>
-  );
-};
+  )
+}
 
 const mapStateToProps = (state) => ({
   user: state.auth.get("user"),
-});
+  currentPage: state.interfaces.get("currentPage"),
+})
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators(
     {
       signoutUserRequest,
+      setCurrentPage,
     },
-    dispatch
+    dispatch,
   ),
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Footer);
+export default connect(mapStateToProps, mapDispatchToProps)(Footer)

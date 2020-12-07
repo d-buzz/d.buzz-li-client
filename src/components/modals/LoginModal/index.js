@@ -96,7 +96,7 @@ const LoginModal = (props) => {
           }
         }
       );
-    }else{
+    } else {
       setUsernameTouched(true)
       setPasswordTouched(true)
     }
@@ -130,6 +130,14 @@ const LoginModal = (props) => {
     setShowPass(!showPass);
   };
 
+  const handleKeypress = e => {
+    //it triggers by pressing the enter key
+    if (e.charCode === 13) {
+      handleSubmit();
+    }
+  }
+
+
   return (
     <React.Fragment>
       <Dialog
@@ -152,52 +160,52 @@ const LoginModal = (props) => {
         <DialogContent>
           <Grid container className={classes.signInContainer}>
             <Grid item xs={12} className={classes.formContainer}>
-              <form id="loginForm" className={classes.form}>
-                <CustomTextField
-                  error={usernameTouched && username == ""}
-                  id="username"
-                  label="Username"
-                  color="secondary"
-                  value={username}
-                  onChange={onChangeValues}
-                  variant="outlined"
-                  required
-                  autoFocus
-                  fullWidth
-                  helperText={
-                    usernameTouched && !username ? "Username is required" : ""
-                  }
-                />
-                <CustomTextField
-                  error={passwordTouched && password == ""}
-                  id="password"
-                  type={showPass ? "text" : "password"}
-                  label="Password"
-                  color="secondary"
-                  value={password}
-                  onChange={onChangeValues}
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  helperText={
-                    passwordTouched && !password ? "Password is required" : ""
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          edge="end"
-                          aria-label="Toggle password visibility"
-                          onClick={onChangeShowPass}
-                        >
-                          {showPass ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </form>
+              <CustomTextField
+                error={usernameTouched && username == ""}
+                id="username"
+                label="Username"
+                color="secondary"
+                value={username}
+                onChange={onChangeValues}
+                onKeyPress={handleKeypress}
+                variant="outlined"
+                required
+                autoFocus
+                fullWidth
+                helperText={
+                  usernameTouched && !username ? "Username is required" : ""
+                }
+              />
+              <CustomTextField
+                error={passwordTouched && password == ""}
+                id="password"
+                type={showPass ? "text" : "password"}
+                label="Password"
+                color="secondary"
+                value={password}
+                onChange={onChangeValues}
+                onKeyPress={handleKeypress}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                helperText={
+                  passwordTouched && !password ? "Password is required" : ""
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        edge="end"
+                        aria-label="Toggle password visibility"
+                        onClick={onChangeShowPass}
+                      >
+                        {showPass ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
             </Grid>
           </Grid>
         </DialogContent>

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { DialogTitle } from "../../../components";
-import { broadcastNotification } from "../../../store/interface/actions";
+import React, { useState, useEffect } from "react"
+import { bindActionCreators } from "redux"
+import { connect } from "react-redux"
+import { DialogTitle } from "../../../components"
+import { broadcastNotification } from "../../../store/interface/actions"
 import { getDomainListRequest, addDomainRequest, updateDomainRequest } from "../../../store/whitelist/actions"
-import { CustomTextField, ContainedButton } from "../../elements";
+import { CustomTextField, ContainedButton } from "../../elements"
 
 import {
   makeStyles,
@@ -13,12 +13,12 @@ import {
   DialogContent,
   Grid,
   Typography,
-} from "@material-ui/core";
+} from "@material-ui/core"
 
 const useStyles = makeStyles((theme) => ({
   root: {},
   title: {
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
   },
   formContainer: {
     position: "relative",
@@ -55,95 +55,101 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: "0.5rem",
     paddingBottom: "1rem",
   },
-}));
+}))
 
 const DomainFormModal = (props) => {
-  const { 
-    show, 
-    onHide, 
-    domainId=null,
-    domainName=null,
+  const {
+    show,
+    onHide,
+    domainId = null,
+    domainName = null,
     broadcastNotification,
     addDomainRequest,
     updateDomainRequest,
-    getDomainListRequest
-  } = props;
-  const [loading, setLoading] = useState(false);
-  const [domain, setDomain] = useState("");
+    getDomainListRequest,
+  } = props
+  const [loading, setLoading] = useState(false)
+  const [domain, setDomain] = useState("")
   const [domainTouched, setDomainTouched] = useState(false)
   const [actionType, setActionType] = useState("add")
-  const classes = useStyles();
+  const classes = useStyles()
 
   useEffect(() => {
-    if(show){
-      if(!domainId){
+    if (show) {
+      if (!domainId) {
         setActionType("add")
-      }else{
+      } else {
         setDomain(domainName)
         setActionType("update")
       }
     }
-  }, [show]);
+  }, [show])
 
   const handleSubmit = () => {
-    if(domain){
-      console.log(actionType)
-      if(actionType === "add"){
+    if (domain) {
+      if (actionType === "add") {
         handleAddDomain()
-      }else{
+      } else {
         handleUpdateDomain()
       }
-    }else{
+    } else {
       setDomainTouched(true)
     }
-  };
+  }
 
   const handleAddDomain = () => {
     setLoading(true)
     addDomainRequest(domain).then((response) => {
       setLoading(false)
-      if(response.code !== 200){
-        broadcastNotification("error",response.message)
-      }else{
+      if (response.code !== 200) {
+        broadcastNotification("error", response.message)
+      } else {
         handleClose()
         getDomainListRequest()
-        broadcastNotification("success",response.message)
+        broadcastNotification("success", response.message)
       }
-    });
+    })
   }
 
   const handleUpdateDomain = () => {
     setLoading(true)
-    updateDomainRequest(domainId,domain).then((response) => {
+    updateDomainRequest(domainId, domain).then((response) => {
       setLoading(false)
-      if(response.code !== 200){
-        broadcastNotification("error",response.message)
-      }else{
+      if (response.code !== 200) {
+        broadcastNotification("error", response.message)
+      } else {
         handleClose()
         getDomainListRequest()
-        broadcastNotification("success",response.message)
+        broadcastNotification("success", response.message)
       }
-    });
+    })
   }
 
   const handleClose = () => {
-    onHide();
+    onHide()
     setDomain("")
     setDomainTouched(false)
-  };
+  }
 
   const onChangeValues = (e) => {
-    const { target } = e;
-    const { id, value } = target;
-
-    if(id === "domain"){
+    const { target } = e
+    const { id, value } = target
+    
+    if (id === "domain") {
       setDomain(value)
     }
 
-    if(!value){
+    if (!value) {
       setDomainTouched(true)
-    } 
-  };
+    }
+  }
+
+  const handleKeypress = e => {
+    //it triggers by pressing the enter key
+    if (e.charCode === 13) {
+      handleSubmit();
+    }
+  }
 
   return (
     <React.Fragment>
@@ -167,21 +173,20 @@ const DomainFormModal = (props) => {
         <DialogContent>
           <Grid container className={classes.signInContainer}>
             <Grid item xs={12} className={classes.formContainer}>
-              <form id="addDomainForm" className={classes.form}>
-                <CustomTextField
+              <CustomTextField
                   error={domainTouched && !domain}
                   id="domain"
                   label="domain"
                   color="secondary"
                   value={domain}
                   onChange={onChangeValues}
+                  onKeyPress={handleKeypress}
                   variant="outlined"
                   required
                   autoFocus
                   fullWidth
                   helperText={domainTouched && !domain ? "Domain is required" : ""}
                 />
-              </form>
             </Grid>
           </Grid>
         </DialogContent>
@@ -200,10 +205,10 @@ const DomainFormModal = (props) => {
         </DialogActions>
       </Dialog>
     </React.Fragment>
-  );
-};
+  )
+}
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({})
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators(
@@ -213,8 +218,8 @@ const mapDispatchToProps = (dispatch) => ({
       updateDomainRequest,
       broadcastNotification,
     },
-    dispatch
+    dispatch,
   ),
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(DomainFormModal);
+export default connect(mapStateToProps, mapDispatchToProps)(DomainFormModal)

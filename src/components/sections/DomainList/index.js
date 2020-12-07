@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { bindActionCreators } from "redux";
-import { pending } from "redux-saga-thunk";
-import { connect } from "react-redux";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import { bindActionCreators } from "redux"
+import { pending } from "redux-saga-thunk"
+import { connect } from "react-redux"
 import {
   Grid,
   Paper,
@@ -10,10 +9,10 @@ import {
   Typography,
   Link,
   Chip,
-} from "@material-ui/core";
-import { FixedHeader, ContainedButton } from "../../elements";
-import { DomainListActions, DomainFormModal } from "../../../components";
-import { getDomainListRequest } from "../../../store/whitelist/actions";
+} from "@material-ui/core"
+import { FixedHeader, ContainedButton } from "../../elements"
+import { DomainListActions, DomainFormModal } from "../../../components"
+import { getDomainListRequest } from "../../../store/whitelist/actions"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,30 +29,30 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontWeight: "bold",
   },
-}));
+}))
 
 const DomainList = (props) => {
-  const { 
-    user, 
-    domainList, 
-    getDomainListRequest, 
-    loading 
-  } = props;
-  const { is_authenticated } = user;
-  const classes = useStyles();
-  const { pathname } = useLocation();
-  const [openAddModal, setOpenAddModal] = useState(false);
+  const {
+    user,
+    domainList,
+    getDomainListRequest,
+    loading,
+    currentPage,
+  } = props
+  const { is_authenticated } = user
+  const classes = useStyles()
+  const [openAddModal, setOpenAddModal] = useState(false)
 
-  const adminDomainRoute = pathname.match(/^\/admin\/whitelist/);
-  let isAdmin = false;
+  const adminDomainRoute = (currentPage === "whitelist")
+  let isAdmin = false
   if (adminDomainRoute && is_authenticated) {
-    isAdmin = true;
+    isAdmin = true
   }
 
   let columns = [
     { id: "domain", label: "Domain", minWidth: 150, type: "link" },
     { id: "status", label: "Status", minWidth: 100, type: "chip" },
-  ];
+  ]
 
   if (isAdmin) {
     columns = [
@@ -61,57 +60,57 @@ const DomainList = (props) => {
       { id: "status", label: "Status", minWidth: 100, type: "chip" },
       { id: "created", label: "Date added", minWidth: 100 },
       { id: "actions", label: "Options", minWidth: 50, type: "options" },
-    ];
+    ]
   }
 
   useEffect(() => {
-    getDomainListRequest();
-  }, []);
+    getDomainListRequest()
+  }, [])
 
   const handleAddDomain = () => {
-    setOpenAddModal(true);
-  };
+    setOpenAddModal(true)
+  }
 
   const handleCloseAddModal = () => {
-    setOpenAddModal(false);
-  };
+    setOpenAddModal(false)
+  }
 
 
   const handleDisplayDataFormat = (rowData, colData) => {
     switch (colData.type) {
-      case "chip":
-        return (
-          <Chip
-            size="small"
-            label={rowData.status.toUpperCase()}
-            color={rowData.status == "active" ? "secondary" : "default"}
-          />
-        );
-      case "link":
-        return (
-          <Link
-            href={`https://${rowData.domain}`}
-            color="secondary"
-            rel="noopener"
-            target="_blank"
-            className={classes.link}
-          >
-            {rowData.domain}
-          </Link>
-        );
-      case "options":
-        return (
-          <DomainListActions
-            domainId={rowData.id}
-            domainName={rowData.domain}
-            isActive={rowData.is_active}
-            handleGetDomainList={getDomainListRequest}
-          />
-        );
-      default:
-        return rowData[colData.id];
+    case "chip":
+      return (
+        <Chip
+          size="small"
+          label={rowData.status.toUpperCase()}
+          color={rowData.status === "active" ? "secondary" : "default"}
+        />
+      )
+    case "link":
+      return (
+        <Link
+          href={`https://${rowData.domain}`}
+          color="secondary"
+          rel="noopener"
+          target="_blank"
+          className={classes.link}
+        >
+          {rowData.domain}
+        </Link>
+      )
+    case "options":
+      return (
+        <DomainListActions
+          domainId={rowData.id}
+          domainName={rowData.domain}
+          isActive={rowData.is_active}
+          handleGetDomainList={getDomainListRequest}
+        />
+      )
+    default:
+      return rowData[colData.id]
     }
-  };
+  }
 
   return (
     <React.Fragment>
@@ -159,22 +158,23 @@ const DomainList = (props) => {
       </div>
       <DomainFormModal show={openAddModal} onHide={handleCloseAddModal} />
     </React.Fragment>
-  );
-};
+  )
+}
 
 const mapStateToProps = (state) => ({
   user: state.auth.get("user"),
   domainList: state.whitelist.get("domainList"),
-  loading: pending(state, "GET_DOMAIN_LIST_REQUEST")
-});
+  loading: pending(state, "GET_DOMAIN_LIST_REQUEST"),
+  currentPage: state.interfaces.get("currentPage"),
+})
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators(
     {
       getDomainListRequest,
     },
-    dispatch
+    dispatch,
   ),
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(DomainList);
+export default connect(mapStateToProps, mapDispatchToProps)(DomainList)
